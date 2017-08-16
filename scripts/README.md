@@ -1,1 +1,0 @@
-Python scripts from [crfsuite](https://github.com/chokkan/crfsuite/tree/master/example).
