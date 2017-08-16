@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.github.jcrfsuite.CrfTagger;
 import com.github.jcrfsuite.util.Pair;
+import com.google.common.collect.Multimap;
 
 /**
  * This example shows how to use jcrfsuite to do POS tagging
@@ -31,12 +32,13 @@ public class Tag {
 			System.exit(1);
 		}*/
 		String modelFile = "E:/sample_crfsuite_model";
-		String testFile = "C:/Users/TSO2492/Desktop/test_feats_crfsuite.txt";
+		String testFile = "C:/Users/TSO2492/Desktop/test_feats_crfsuiteNew.txt";
+		
+		CrfTagger crfTagger = new CrfTagger(modelFile);
+		Map<List<Pair<String, Double>>, Double> tagProbLists = crfTagger.tagWithSequenceProbability(testFile);
+		
 		
 		// POS tag
-		CrfTagger crfTagger = new CrfTagger(modelFile);
-		List<Map<List<Pair<String, Double>>, Double>> tagProbLists = crfTagger.tagWithSequenceProbability(testFile);
-		
 		// Compute accuracy
 		System.out.println("Gold\tPredict\tProbability");
 		

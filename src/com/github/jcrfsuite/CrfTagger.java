@@ -3,6 +3,7 @@ package com.github.jcrfsuite;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,8 +75,7 @@ public class CrfTagger {
 	 *			 If there is a problem using the file.
 	 */
 	
-	public synchronized Map<List<Pair<String, Double>>,Double> tagWithProbability(ItemSequence xseq) {
-		Map<List<Pair<String, Double>>,Double> predictedProbability = new HashMap<List<Pair<String, Double>>,Double>();
+	public synchronized void tagWithProbability(ItemSequence xseq, Map<List<Pair<String, Double>>,Double> taggedSentences) {
 		List<Pair<String, Double>> predicted = 
 				new ArrayList<Pair<String, Double>>();
 		
@@ -86,18 +86,17 @@ public class CrfTagger {
 			predicted.add(new Pair<String, Double>(
 					label, tagger.marginal(label, i)));
 		}
-		predictedProbability.put(predicted, tagger.probability(labels));
-		return predictedProbability;
+		taggedSentences.put(predicted, tagger.probability(labels));
 	}
 	
-	public List<Map<List<Pair<String, Double>>, Double>> tagWithSequenceProbability(String fileName) throws IOException {
+	public Map<List<Pair<String, Double>>, Double> tagWithSequenceProbability(String fileName) throws IOException {
 		
-		List<Map<List<Pair<String, Double>>,Double>> taggedSentences = 
-				new ArrayList<Map<List<Pair<String, Double>>,Double>>();
+		Map<List<Pair<String, Double>>,Double> taggedSentences = 
+				new LinkedHashMap<List<Pair<String, Double>>,Double>();
 
 		Pair<List<ItemSequence>, List<StringList>> taggingSequences = CrfTrainer.loadTrainingInstances(fileName, CrfTrainer.DEFAULT_ENCODING);
 		for (ItemSequence xseq: taggingSequences.getFirst()) {
-			taggedSentences.add(tagWithProbability(xseq));
+				tagWithProbability(xseq,taggedSentences);
 		}
 		
 		return taggedSentences;
